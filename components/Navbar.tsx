@@ -19,13 +19,16 @@ const Navbar = () => {
         {/* MENU ITEMS  */}
         <div className='flex gap-5 justify-center items-center'>
           {menuItems.map((item, index) => (
-            <div className='w-[112px] h-[40px] rounded-full flex gap-1 justify-center items-center hover:bg-black hover:text-white cursor-pointer'>
+            <div
+              className='w-[112px] h-[40px] rounded-full flex gap-1 justify-center items-center cursor-pointer hover:bg-white hover:invert ease-in-out duration-600'
+              key={index}
+            >
               <Image
                 src={item.icon}
                 alt={item.name}
                 width={20}
                 height={20}
-                className='object-fit text-black hover:text-white'
+                className='object-fit brightness-0 contrast-200'
               />
               <p className=''>{item.name}</p>
             </div>
@@ -39,14 +42,14 @@ const Navbar = () => {
               alt='notifications'
               width={20}
               height={20}
-              className='cursor-pointer'
+              className='cursor-pointer brightness-0 contrast-200'
             />
             <Image
               src='/icons/chat.svg'
               alt='notifications'
               width={20}
               height={20}
-              className='cursor-pointer'
+              className='cursor-pointer brightness-0 contrast-200'
             />
           </div>
           <div className='flex items-center justify-center h-[40px] gap-3 rounded-full p-2 bg-linear-to-r from-zinc-100 to-[#EFF1F6]'>
@@ -58,7 +61,7 @@ const Navbar = () => {
               alt='notifications'
               width={20}
               height={20}
-              className='cursor-pointer'
+              className='cursor-pointer brightness-0 contrast-200'
             />
           </div>
         </div>
