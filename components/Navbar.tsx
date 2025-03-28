@@ -1,11 +1,17 @@
+'use client'
+
 import { menuItems } from '@/constants'
 import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import React from 'react'
 
 const Navbar = () => {
+  const pathname = usePathname()
+
   return (
     <nav className='flex justify-center'>
-      <div className='w-[1408px] h-[64px] mt-[16px] rounded-full shadow-md px-[24px] flex justify-between'>
+      <div className='hidden w-[90%] h-[64px] mt-[16px] rounded-full shadow-md px-[24px] lg:flex justify-between fixed '>
         {/* LOGO  */}
         <div className='h-full flex items-center'>
           <Image
@@ -18,21 +24,30 @@ const Navbar = () => {
         </div>
         {/* MENU ITEMS  */}
         <div className='flex gap-5 justify-center items-center'>
-          {menuItems.map((item, index) => (
-            <div
-              className='w-[112px] h-[40px] rounded-full flex gap-1 justify-center items-center cursor-pointer hover:bg-white hover:invert ease-in-out duration-600'
-              key={index}
-            >
-              <Image
-                src={item.icon}
-                alt={item.name}
-                width={20}
-                height={20}
-                className='object-fit brightness-0 contrast-200'
-              />
-              <p className=''>{item.name}</p>
-            </div>
-          ))}
+          {menuItems.map((item, index) => {
+            const isActive = pathname === item.link
+            // FIX HOVER EFFECT
+            return (
+              <Link
+                href={item.link}
+                className={`w-[112px] h-[40px] rounded-full flex gap-1 justify-center items-center cursor-pointer ${
+                  isActive
+                    ? 'bg-white invert'
+                    : 'hover:bg-white hover:invert transition duration-400'
+                }`}
+                key={index}
+              >
+                <Image
+                  src={item.icon}
+                  alt={item.name}
+                  width={20}
+                  height={20}
+                  className='object-fit brightness-0 contrast-200'
+                />
+                <p className='font-semibold'>{item.name}</p>
+              </Link>
+            )
+          })}
         </div>
         {/* PROFILE */}
         <div className='flex justify-center items-center gap-5'>
