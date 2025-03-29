@@ -14,7 +14,7 @@ const Navbar = () => {
   return (
     <nav className='flex justify-center z-[51] relative'>
       {/* WEB  */}
-      <div className='hidden w-[90%] h-[64px] lg:mt-[16px] rounded-full shadow-md px-[24px] lg:flex justify-between fixed '>
+      <div className='hidden w-[90%] h-[64px] lg:mt-[16px] rounded-full shadow-md px-[24px] lg:flex justify-between sticky lg:fixed bg-white backdrop-blur-md '>
         {/* LOGO  */}
         <div className='h-full flex items-center'>
           <Image

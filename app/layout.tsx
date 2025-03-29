@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${inter.variable} antialiased`}>
-        {/* <div className=' h-[80px] w-screen bg-white backdrop-blur-md z-50'></div> */}
+        <div className='sticky lg:fixed h-[80px] w-screen bg-white backdrop-blur-md z-50'></div>
         <Navbar />
         <div className='flex justify-center items-center mt-[80px]'>
           <FloatingIcons />
