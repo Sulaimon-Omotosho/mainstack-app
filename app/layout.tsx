@@ -36,7 +36,7 @@ export default function RootLayout({
         <Navbar />
         <div className='flex justify-center items-center mt-[80px]'>
           <FloatingIcons />
-          <div className=' max-w-[1160px]  min-w-[1160px]'>{children}</div>
+          <div className=' max-w-[1160px] lg:min-w-[1160px]'>{children}</div>
         </div>
       </body>
     </html>

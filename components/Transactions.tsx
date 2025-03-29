@@ -5,7 +5,7 @@ import { transactions } from '@/constants'
 
 const TransactionsPage = () => {
   return (
-    <section className=' mb-96'>
+    <section className='px-4 mb-96'>
       <section className='flex justify-between'>
         <div className=''>
           <h2 className='text-xl font-bold'>24 Transactions</h2>

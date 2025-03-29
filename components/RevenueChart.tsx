@@ -14,18 +14,18 @@ const RevenueChart = () => {
   ]
 
   return (
-    <div className='flex gap-[120px] mb-20 z-0 !important'>
-      <div className='flex-2'>
+    <div className='flex flex-col md:flex-row w-full px-4 gap-5 lg:gap-[120px] mb-20 z-0'>
+      <div className='flex flex-col md:flex-2 w-full'>
         {/* Available Balance */}
-        <div className='flex justify-between items-center w-[60%]'>
-          <div className='flex flex-col gap-5'>
+        <div className='flex flex-col md:flex-row gap-5 md:justify-between items-end w-full lg:w-[60%]'>
+          <div className='flex flex-col gap-2 items-end md:items-start md:gap-5'>
             <div className='text-gray-500 text-sm'>Available Balance</div>
             <div className='text-3xl font-bold'>
               USD <span className='text-black'>120,500.00</span>
             </div>
           </div>
 
-          <Button className='bg-black text-white px-12 py-6 rounded-full hover:bg-gray-800'>
+          <Button className='bg-black text-white px-6 py-3 md:px-12 md:py-6 rounded-full hover:bg-gray-800'>
             Withdraw
           </Button>
         </div>
@@ -46,7 +46,7 @@ const RevenueChart = () => {
           </ResponsiveContainer>
         </div>
       </div>
-      <div className='flex-1 flex flex-col justify-between h-[300px] z-0'>
+      <div className='md:flex-1 flex flex-col justify-between h-[300px] z-0'>
         {balances.map((item, idx) => (
           <div className='relative' key={idx}>
             <p className='text-sm'>{item.name}</p>
