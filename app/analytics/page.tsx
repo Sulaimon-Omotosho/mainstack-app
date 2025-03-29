@@ -1,6 +1,7 @@
 import Image from 'next/image'
+import React from 'react'
 
-export default function Home() {
+const AnalyticsPage = () => {
   return (
     <section className='flex w-full h-screen justify-center items-center'>
       <Image
@@ -9,7 +10,9 @@ export default function Home() {
         width={100}
         alt='logo'
       />
-      <p className='text-3xl font-black'>Mainstack</p>
+      <p className='text-3xl font-black animate-pulse'>Analytics Page ...</p>
     </section>
   )
 }
+
+export default AnalyticsPage
