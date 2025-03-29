@@ -10,7 +10,7 @@ const Navbar = () => {
   const pathname = usePathname()
 
   return (
-    <nav className='flex justify-center'>
+    <nav className='flex justify-center z-50 relative'>
       <div className='hidden w-[90%] h-[64px] mt-[16px] rounded-full shadow-md px-[24px] lg:flex justify-between fixed '>
         {/* LOGO  */}
         <div className='h-full flex items-center'>

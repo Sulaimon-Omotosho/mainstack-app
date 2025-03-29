@@ -4,7 +4,7 @@ import React from 'react'
 
 const RevenuePage = () => {
   return (
-    <section className='w-full pt-14'>
+    <section className='w-full pt-14 z-0'>
       <RevenueChart />
       <Transactions />
     </section>

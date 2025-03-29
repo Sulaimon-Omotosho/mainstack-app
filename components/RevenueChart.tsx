@@ -14,7 +14,7 @@ const RevenueChart = () => {
   ]
 
   return (
-    <div className='flex gap-[120px] mb-20'>
+    <div className='flex gap-[120px] mb-20 z-0 !important'>
       <div className='flex-2'>
         {/* Available Balance */}
         <div className='flex justify-between items-center w-[60%]'>
@@ -31,7 +31,7 @@ const RevenueChart = () => {
         </div>
 
         {/* Line Chart */}
-        <div className='mt-4'>
+        <div className='mt-4 relative'>
           <ResponsiveContainer width='100%' height={250}>
             <LineChart data={data}>
               <XAxis dataKey='date' tick={{ fontSize: 12 }} tickLine={false} />
@@ -46,7 +46,7 @@ const RevenueChart = () => {
           </ResponsiveContainer>
         </div>
       </div>
-      <div className='flex-1 flex flex-col justify-between h-[300px]'>
+      <div className='flex-1 flex flex-col justify-between h-[300px] z-0'>
         {balances.map((item, idx) => (
           <div className='relative' key={idx}>
             <p className='text-sm'>{item.name}</p>
