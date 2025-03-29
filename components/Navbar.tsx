@@ -12,9 +12,9 @@ const Navbar = () => {
   const [menu, setMenu] = useState(false)
 
   return (
-    <nav className='flex justify-center z-50 relative'>
+    <nav className='flex justify-center z-[51] relative'>
       {/* WEB  */}
-      <div className='hidden w-[90%] h-[64px] mt-[16px] rounded-full shadow-md px-[24px] lg:flex justify-between fixed '>
+      <div className='hidden w-[90%] h-[64px] lg:mt-[16px] rounded-full shadow-md px-[24px] lg:flex justify-between fixed '>
         {/* LOGO  */}
         <div className='h-full flex items-center'>
           <Image
@@ -86,7 +86,7 @@ const Navbar = () => {
       </div>
 
       {/* MOBILE  */}
-      <div className='lg:hidden flex items-center w-[90%] h-[64px] rounded-full shadow-md px-[24px] justify-between fixed '>
+      <div className='lg:hidden flex items-center w-[90%] h-[64px] rounded-full shadow-md px-[24px] justify-between fixed'>
         {/* LOGO  */}
         <div className='h-full flex items-center'>
           <Image
