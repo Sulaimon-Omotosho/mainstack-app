@@ -5,7 +5,6 @@ import { Button } from './ui/button'
 import { ArrowDownLeftIcon, ArrowUpRightIcon, Download } from 'lucide-react'
 import Filter from './Filter'
 import { TRANSACTION } from '@/lib/types'
-import { intlFormat } from 'date-fns'
 
 const TransactionsPage = () => {
   const [transactionData, setTransactionData] = useState<TRANSACTION[] | null>(

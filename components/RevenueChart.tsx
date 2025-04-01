@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button'
-import { balances } from '@/constants'
 import Image from 'next/image'
 import LineChartComp from './LineChartComp'
 import { WALLET } from '@/lib/types'
