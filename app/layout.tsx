@@ -3,16 +3,7 @@ import { Geist, Geist_Mono, Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import FloatingIcons from '@/components/FloatingIcons'
-
-// const geistSans = Geist({
-//   variable: '--font-geist-sans',
-//   subsets: ['latin'],
-// })
-
-// const geistMono = Geist_Mono({
-//   variable: '--font-geist-mono',
-//   subsets: ['latin'],
-// })
+import { USER } from '@/lib/types'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -24,16 +15,30 @@ export const metadata: Metadata = {
   description: 'Mainstack ...',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const userApi = 'https://fe-task-api.mainstack.io/user'
+
+  let userData = null
+
+  try {
+    const response = await fetch(userApi)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+    userData = await response.json()
+  } catch (error) {
+    console.error('Error fetching User Data')
+  }
+
   return (
     <html lang='en'>
       <body className={`${inter.variable} antialiased`}>
         <div className='sticky lg:fixed h-[80px] w-screen bg-white backdrop-blur-md z-50'></div>
-        <Navbar />
+        <Navbar user={userData as USER} />
         <div className='flex justify-center items-center mt-[80px]'>
           <FloatingIcons />
           <div className=' max-w-[1160px] lg:min-w-[1160px]'>{children}</div>
