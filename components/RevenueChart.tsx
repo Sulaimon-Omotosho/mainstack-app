@@ -51,7 +51,10 @@ const RevenueChart = () => {
           <div className='flex flex-col gap-2 items-end md:items-start md:gap-5'>
             <div className='text-gray-500 text-sm'>Available Balance</div>
             <div className='text-3xl font-bold'>
-              USD <span className='text-black'>{walletData?.balance!}</span>
+              USD{' '}
+              <span className='text-black'>
+                {walletData?.balance.toFixed(2)}
+              </span>
             </div>
           </div>
 

@@ -113,7 +113,9 @@ const TransactionsPage = () => {
                     currency: 'USD',
                   }).format(txn.amount)}
                 </div>
-                <div className='text-sm text-gray-500'>{txn.date}</div>
+                <div className='text-sm text-gray-500'>
+                  {txn.date.toLocaleString()}
+                </div>
               </div>
             </div>
           ))}
