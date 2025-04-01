@@ -1,6 +1,7 @@
 'use client'
 
 import { menuItems } from '@/constants'
+import { USER } from '@/lib/types'
 import { MenuIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,7 +12,7 @@ interface NavProps {
   user: USER | null
 }
 
-const Navbar = React.FC<NavProps>({user}) => {
+const Navbar: React.FC<NavProps> = ({ user }) => {
   const pathname = usePathname()
   const [menu, setMenu] = useState(false)
 
@@ -81,7 +82,9 @@ const Navbar = React.FC<NavProps>({user}) => {
           </div>
           <div className='flex items-center justify-center h-[40px] gap-3 rounded-full p-2 bg-linear-to-r from-zinc-100 to-[#EFF1F6]'>
             <div className='bg-black w-[32px] h-[32px] rounded-full flex items-center justify-center cursor-pointer'>
-              <p className='text-[14px] text-white'>{getInitials(user)}</p>
+              <p className='text-[14px] text-white'>
+                {getInitials(user as USER)}
+              </p>
             </div>
             <Image
               src='/icons/menu.svg'
@@ -163,7 +166,9 @@ const Navbar = React.FC<NavProps>({user}) => {
             </div>
             <div className='flex items-center justify-center h-[40px] gap-3 rounded-full p-2 bg-linear-to-r from-zinc-100 to-[#EFF1F6]'>
               <div className='bg-black w-[32px] h-[32px] rounded-full flex items-center justify-center cursor-pointer'>
-                <p className='text-[14px] text-white'>{getInitials(user)}</p>
+                <p className='text-[14px] text-white'>
+                  {getInitials(user as USER)}
+                </p>
               </div>
               <Image
                 src='/icons/menu.svg'
