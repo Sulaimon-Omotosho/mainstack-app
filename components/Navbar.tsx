@@ -1,6 +1,7 @@
 'use client'
 
 import { menuItems } from '@/constants'
+import { USER } from '@/lib/types'
 import { MenuIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
