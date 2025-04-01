@@ -7,9 +7,14 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 
-const Navbar = () => {
+const Navbar = ({ user }: USER) => {
   const pathname = usePathname()
   const [menu, setMenu] = useState(false)
+
+  const getInitials = (user: USER) => {
+    if (!user) return '??'
+    return `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
+  }
 
   return (
     <nav className='flex justify-center z-[51] relative'>
@@ -72,7 +77,7 @@ const Navbar = () => {
           </div>
           <div className='flex items-center justify-center h-[40px] gap-3 rounded-full p-2 bg-linear-to-r from-zinc-100 to-[#EFF1F6]'>
             <div className='bg-black w-[32px] h-[32px] rounded-full flex items-center justify-center cursor-pointer'>
-              <p className='text-[14px] text-white'>OJ</p>
+              <p className='text-[14px] text-white'>{getInitials(user)}</p>
             </div>
             <Image
               src='/icons/menu.svg'
@@ -154,7 +159,7 @@ const Navbar = () => {
             </div>
             <div className='flex items-center justify-center h-[40px] gap-3 rounded-full p-2 bg-linear-to-r from-zinc-100 to-[#EFF1F6]'>
               <div className='bg-black w-[32px] h-[32px] rounded-full flex items-center justify-center cursor-pointer'>
-                <p className='text-[14px] text-white'>OJ</p>
+                <p className='text-[14px] text-white'>{getInitials(user)}</p>
               </div>
               <Image
                 src='/icons/menu.svg'

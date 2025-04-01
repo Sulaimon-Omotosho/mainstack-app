@@ -1,11 +1,42 @@
 'use client'
-import React from 'react'
+
+import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button'
-import { Line, LineChart, ResponsiveContainer, XAxis } from 'recharts'
 import { balances } from '@/constants'
 import Image from 'next/image'
+import LineChartComp from './LineChartComp'
+import { WALLET } from '@/lib/types'
 
 const RevenueChart = () => {
+  const [walletData, setWalletData] = useState<WALLET | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchWalletData = async () => {
+      try {
+        const response = await fetch('https://fe-task-api.mainstack.io/wallet')
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+        const data = (await response.json()) as WALLET
+        setWalletData(data)
+      } catch (error) {
+        setError('Failed to fetch wallet data')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchWalletData()
+  }, [])
+
+  const formatNumber = (num: number | any) =>
+    num ? new Intl.NumberFormat('en-US').format(num) : '0'
+
+  if (loading) return <p>Loading...</p>
+  if (error) return <p className='text-red-500'>{error}</p>
+
   const data = [
     { date: 'Apr 1, 2022', balance: 100 },
     { date: 'Apr 10, 2022', balance: 150 },
@@ -21,7 +52,7 @@ const RevenueChart = () => {
           <div className='flex flex-col gap-2 items-end md:items-start md:gap-5'>
             <div className='text-gray-500 text-sm'>Available Balance</div>
             <div className='text-3xl font-bold'>
-              USD <span className='text-black'>120,500.00</span>
+              USD <span className='text-black'>{walletData?.balance!}</span>
             </div>
           </div>
 
@@ -31,26 +62,20 @@ const RevenueChart = () => {
         </div>
 
         {/* Line Chart */}
-        <div className='mt-4 relative'>
-          <ResponsiveContainer width='100%' height={250}>
-            <LineChart data={data}>
-              <XAxis dataKey='date' tick={{ fontSize: 12 }} tickLine={false} />
-              <Line
-                type='monotone'
-                dataKey='balance'
-                stroke='#E27128'
-                strokeWidth={2}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        <LineChartComp data={data} />
       </div>
       <div className='md:flex-1 flex flex-col justify-between h-[300px] z-0'>
-        {balances.map((item, idx) => (
-          <div className='relative' key={idx}>
-            <p className='text-sm'>{item.name}</p>
-            <h2 className='font-bold text-2xl pt-2'>USD {item.amount}</h2>
+        {[
+          { label: 'Ledger Balance', value: walletData?.ledger_balance },
+          { label: 'Total Payout', value: walletData?.total_payout },
+          { label: 'Total Revenue', value: walletData?.total_revenue },
+          { label: 'Pending Payout', value: walletData?.pending_payout },
+        ].map((item, index) => (
+          <div className='relative' key={index}>
+            <p className='text-sm'>{item.label}</p>
+            <h2 className='font-bold text-2xl pt-2'>
+              USD {formatNumber(item.value)}
+            </h2>
             <Image
               src='/icons/info.svg'
               alt='icon'
