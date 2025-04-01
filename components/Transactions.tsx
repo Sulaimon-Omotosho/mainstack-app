@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Button } from './ui/button'
 import { ArrowDownLeftIcon, ArrowUpRightIcon, Download } from 'lucide-react'
 import Filter from './Filter'
@@ -12,6 +12,17 @@ const TransactionsPage = () => {
   )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [filters, setFilters] = useState<{
+    fromDate: Date | null
+    toDate: Date | null
+    selectedTypes: string[]
+    selectedStatuses: string[]
+  }>({
+    fromDate: null,
+    toDate: null,
+    selectedTypes: [],
+    selectedStatuses: [],
+  })
 
   useEffect(() => {
     const fetchTransactionData = async () => {
@@ -20,10 +31,13 @@ const TransactionsPage = () => {
           'https://fe-task-api.mainstack.io/transactions'
         )
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`)
+          throw new Error(
+            `Error ${response.status}: Failed to fetch transactions`
+          )
         }
-        const data = (await response.json()) as TRANSACTION[]
+        const data: TRANSACTION[] = await response.json()
         setTransactionData(data)
+        // setFilteredTransactions(data)
       } catch (error) {
         setError('Failed to fetch Transaction Data')
       } finally {
@@ -33,6 +47,40 @@ const TransactionsPage = () => {
 
     fetchTransactionData()
   }, [])
+
+  const filteredTransactions = useMemo(() => {
+    return transactionData?.filter((transaction) => {
+      const { fromDate, toDate, selectedTypes, selectedStatuses } = filters
+
+      const transactionDate = new Date(transaction.date)
+
+      if (fromDate instanceof Date && transactionDate < fromDate) return false
+      if (toDate instanceof Date && transactionDate > toDate) return false
+      if (selectedTypes.length > 0 && !selectedTypes.includes(transaction.type))
+        return false
+      if (
+        selectedStatuses.length > 0 &&
+        !selectedStatuses.includes(transaction.status)
+      )
+        return false
+
+      return true
+    })
+  }, [transactionData, filters])
+
+  const handleFilter = (
+    fromDate?: Date,
+    toDate?: Date,
+    selectedTypes?: string[],
+    selectedStatuses?: string[]
+  ) => {
+    setFilters({
+      fromDate: fromDate ?? null, // Convert undefined to null
+      toDate: toDate ?? null, // Convert undefined to null
+      selectedTypes: selectedTypes || [],
+      selectedStatuses: selectedStatuses || [],
+    })
+  }
 
   return (
     <section className='px-4 mb-96'>
@@ -48,7 +96,7 @@ const TransactionsPage = () => {
           </p>
         </div>
         <div className='flex gap-2'>
-          <Filter />
+          <Filter onFilter={handleFilter} />
           <Button className='text-sm text-black py-6 bg-gray-200 rounded-full flex gap-1 justify-center items-center hover:bg-gray-300'>
             Export list
             <Download />
@@ -68,11 +116,14 @@ const TransactionsPage = () => {
       {error && <p className='text-center text-red-500'>{error}</p>}
 
       {/* Transactions List  */}
-      {!loading && !error && transactionData && transactionData.length > 0 ? (
+      {!loading &&
+      !error &&
+      filteredTransactions &&
+      filteredTransactions.length > 0 ? (
         <section className=''>
-          {transactionData.map((txn) => (
+          {filteredTransactions.map((txn, idx) => (
             <div
-              key={txn.payment_reference}
+              key={idx}
               className='flex justify-between items-center py-3 border-b border-gray-200'
             >
               {/* LEFT: Transaction Info  */}
@@ -114,7 +165,7 @@ const TransactionsPage = () => {
                   }).format(txn.amount)}
                 </div>
                 <div className='text-sm text-gray-500'>
-                  {txn.date.toLocaleString()}
+                  {new Date(txn.date).toLocaleString()}
                 </div>
               </div>
             </div>

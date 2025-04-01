@@ -27,3 +27,12 @@ export interface TRANSACTION {
   type: 'deposit' | 'withdrawal'
   date: Date
 }
+
+export type FilterProps = {
+  onFilter: (
+    fromDate?: Date,
+    toDate?: Date,
+    selectedTypes?: string[],
+    selectedStatuses?: string[]
+  ) => void
+}

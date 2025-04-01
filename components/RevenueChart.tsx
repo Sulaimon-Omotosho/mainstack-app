@@ -8,7 +8,6 @@ import { WALLET } from '@/lib/types'
 
 const RevenueChart = () => {
   const [walletData, setWalletData] = useState<WALLET | null>(null)
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -22,8 +21,6 @@ const RevenueChart = () => {
         setWalletData(data)
       } catch (error) {
         setError('Failed to fetch wallet data')
-      } finally {
-        setLoading(false)
       }
     }
 
@@ -31,9 +28,8 @@ const RevenueChart = () => {
   }, [])
 
   const formatNumber = (num: number | any) =>
-    num ? new Intl.NumberFormat('en-US').format(num) : '0'
+    num ? new Intl.NumberFormat('en-US').format(num) : '0.00'
 
-  if (loading) return <p>Loading...</p>
   if (error) return <p className='text-red-500'>{error}</p>
 
   const data = [

@@ -4,7 +4,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -25,9 +24,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
@@ -35,84 +31,51 @@ import { Checkbox } from '@/components/ui/checkbox'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form'
 import { Button } from './ui/button'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-
-const status = [
-  {
-    id: 'successful',
-    label: 'Successful',
-  },
-  {
-    id: 'pending',
-    label: 'Pending',
-  },
-  {
-    id: 'failed',
-    label: 'Failed',
-  },
-]
-
-const type = [
-  {
-    id: 'storeTransactions',
-    label: 'Store Transactions',
-  },
-  {
-    id: 'getTipped',
-    label: 'Get Tipped',
-  },
-  {
-    id: 'withdrawals',
-    label: 'Withdrawals',
-  },
-  {
-    id: 'chargebacks',
-    label: 'Chargebacks',
-  },
-  {
-    id: 'cashbacks',
-    label: 'Cashbacks',
-  },
-  {
-    id: 'refer&Earn',
-    label: 'Refer & Earn',
-  },
-]
+import { metaType, status } from '@/constants'
+import { FilterProps } from '@/lib/types'
 
 const FormSchema = z.object({
-  items: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: 'You have to select at least one item.',
-  }),
+  transactionTypes: z.array(z.string()),
+  transactionStatuses: z.array(z.string()),
 })
 
-const Filter = () => {
+const Filter: React.FC<FilterProps> = ({ onFilter }) => {
   const [fromDate, setFromDate] = React.useState<Date>()
   const [toDate, setToDate] = React.useState<Date>()
+
+  const defaultTransactionTypes = metaType.map((item) => item.id)
+  const defaultTransactionStatuses = status.map((item) => item.id)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      items: [...type.map((t) => t.id)],
+      transactionTypes: defaultTransactionTypes,
+      transactionStatuses: defaultTransactionStatuses,
     },
   })
 
-  const selectedStatuses = form
-    .watch('items')
-    .filter((item) => status.some((s) => s.id === item))
+  const handleApplyFilter = () => {
+    const { transactionTypes, transactionStatuses } = form.getValues()
+    onFilter(fromDate, toDate, transactionTypes, transactionStatuses)
+  }
 
-  const selectedTransactions = form
-    .watch('items')
-    .filter((item) => type.some((t) => t.id === item))
+  const handleClearFilter = () => {
+    form.reset({
+      transactionTypes: defaultTransactionTypes,
+      transactionStatuses: defaultTransactionStatuses,
+    })
+    setFromDate(undefined)
+    setToDate(undefined)
+  }
 
   return (
     <Drawer direction='right'>
@@ -127,18 +90,12 @@ const Filter = () => {
               <X />
             </DrawerClose>
           </DrawerTitle>
-          <DrawerDescription className='flex justify-between items-center mt-8'>
-            <div className='p-2 ring-[1px] rounded-full text-xs'>Today</div>
-            <div className='p-2 ring-[1px] rounded-full text-xs'>
-              Last 7 Days
-            </div>
-            <div className='p-2 ring-[1px] rounded-full text-xs'>
-              This Month
-            </div>
-            <div className='p-2 ring-[1px] rounded-full text-xs'>
-              Last 3 months
-            </div>
-          </DrawerDescription>
+          <div className='flex justify-between items-center mt-8'>
+            <p className='p-2 ring-[1px] rounded-full text-xs'>Today</p>
+            <p className='p-2 ring-[1px] rounded-full text-xs'>Last 7 Days</p>
+            <p className='p-2 ring-[1px] rounded-full text-xs'>This Month</p>
+            <p className='p-2 ring-[1px] rounded-full text-xs'>Last 3 months</p>
+          </div>
         </DrawerHeader>
 
         {/* DATE PICKER  */}
@@ -201,10 +158,11 @@ const Filter = () => {
           <h2 className='text-sm text-black mb-2'>Transaction Type</h2>
           <DropdownMenu>
             <DropdownMenuTrigger className='w-full bg-slate-200 border-none rounded-md p-2 text-left truncate'>
-              {selectedTransactions.length > 0 ? (
+              {form.watch('transactionTypes').length > 0 ? (
                 <span className='block truncate'>
-                  {selectedTransactions
-                    .map((id) => type.find((t) => t.id === id)?.label)
+                  {form
+                    .watch('transactionTypes')
+                    .map((id) => metaType.find((t) => t.id === id)?.label)
                     .join(', ')}
                 </span>
               ) : (
@@ -213,54 +171,49 @@ const Filter = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className='z-[62]'>
               <Form {...form}>
-                <form
-                  // onSubmit={form.handleSubmit(onSubmit)}
-                  className='space-y-8'
-                >
-                  <FormField
-                    control={form.control}
-                    name='items'
-                    render={() => (
-                      <FormItem>
-                        <div className='w-[350px] h-[250px] flex flex-col space-y-6 overflow-y-auto mt-4 ml-4'>
-                          {type.map((item) => (
-                            <FormField
-                              key={item.id}
-                              control={form.control}
-                              name='items'
-                              render={({ field }) => {
-                                return (
-                                  <FormItem className='flex items-start space-x-3 space-y-0'>
-                                    <FormControl>
-                                      <Checkbox
-                                        checked={field.value?.includes(item.id)}
-                                        onCheckedChange={(checked) => {
-                                          return checked
-                                            ? field.onChange([
-                                                ...field.value,
-                                                item.id,
-                                              ])
-                                            : field.onChange(
-                                                field.value?.filter(
-                                                  (value) => value !== item.id
-                                                )
+                <FormField
+                  control={form.control}
+                  name='transactionTypes'
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className='w-[350px] h-[250px] flex flex-col space-y-6 overflow-y-auto mt-4 ml-4'>
+                        {metaType.map((item) => (
+                          <FormField
+                            key={item.id}
+                            control={form.control}
+                            name='transactionTypes'
+                            render={({ field }) => {
+                              return (
+                                <FormItem className='flex items-start space-x-3 space-y-0'>
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(item.id)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...field.value,
+                                              item.id,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== item.id
                                               )
-                                        }}
-                                      />
-                                    </FormControl>
-                                    <FormLabel className='text-sm font-normal'>
-                                      {item.label}
-                                    </FormLabel>
-                                  </FormItem>
-                                )
-                              }}
-                            />
-                          ))}
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                </form>
+                                            )
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className='text-sm font-normal'>
+                                    {item.label}
+                                  </FormLabel>
+                                </FormItem>
+                              )
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </FormItem>
+                  )}
+                />
               </Form>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -271,9 +224,10 @@ const Filter = () => {
           <h2 className='text-sm text-black mb-2'>Transaction Status</h2>
           <DropdownMenu>
             <DropdownMenuTrigger className='w-full bg-slate-200 border-none rounded-md p-2'>
-              {selectedStatuses.length > 0 ? (
+              {form.watch('transactionStatuses').length > 0 ? (
                 <span className='block truncate'>
-                  {selectedStatuses
+                  {form
+                    .watch('transactionStatuses')
                     .map((id) => status.find((s) => s.id === id)?.label)
                     .join(',')}
                 </span>
@@ -283,70 +237,70 @@ const Filter = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className='z-[62]'>
               <Form {...form}>
-                <form
-                  // onSubmit={form.handleSubmit(onSubmit)}
-                  className='space-y-8'
-                >
-                  <FormField
-                    control={form.control}
-                    name='items'
-                    render={() => (
-                      <FormItem>
-                        <div className='w-[350px] h-[130px] flex flex-col space-y-6 overflow-y-auto mt-4 ml-4'>
-                          {status.map((item) => (
-                            <FormField
-                              key={item.id}
-                              control={form.control}
-                              name='items'
-                              render={({ field }) => {
-                                return (
-                                  <FormItem
-                                    key={item.id}
-                                    className='flex flex-row items-start space-x-3 space-y-0'
-                                  >
-                                    <FormControl>
-                                      <Checkbox
-                                        checked={field.value?.includes(item.id)}
-                                        onCheckedChange={(checked) => {
-                                          return checked
-                                            ? field.onChange([
-                                                ...field.value,
-                                                item.id,
-                                              ])
-                                            : field.onChange(
-                                                field.value?.filter(
-                                                  (value) => value !== item.id
-                                                )
+                <FormField
+                  control={form.control}
+                  name='transactionStatuses'
+                  render={() => (
+                    <FormItem>
+                      <div className='w-[350px] h-[130px] flex flex-col space-y-6 overflow-y-auto mt-4 ml-4'>
+                        {status.map((item) => (
+                          <FormField
+                            key={item.id}
+                            control={form.control}
+                            name='transactionStatuses'
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={item.id}
+                                  className='flex flex-row items-start space-x-3 space-y-0'
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(item.id)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...field.value,
+                                              item.id,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== item.id
                                               )
-                                        }}
-                                      />
-                                    </FormControl>
-                                    <FormLabel className='text-sm font-normal'>
-                                      {item.label}
-                                    </FormLabel>
-                                  </FormItem>
-                                )
-                              }}
-                            />
-                          ))}
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                </form>
+                                            )
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className='text-sm font-normal'>
+                                    {item.label}
+                                  </FormLabel>
+                                </FormItem>
+                              )
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </FormItem>
+                  )}
+                />
               </Form>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
         <DrawerFooter className='flex-row gap-3'>
-          <Button className='flex-1/2 rounded-full bg-white text-black ring-[1px] hover:bg-gray-200'>
+          <Button
+            onClick={handleClearFilter}
+            className='flex-1/2 rounded-full bg-white text-black ring-[1px] hover:bg-gray-200'
+          >
             Clear
           </Button>
-          <Button className='flex-1/2 rounded-full bg-slate-200'>Apply</Button>
-          {/* <DrawerClose>
-                  <Button variant='outline'>Cancel</Button>
-                </DrawerClose> */}
+          <Button
+            onClick={handleApplyFilter}
+            className='flex-1/2 rounded-full bg-slate-200'
+          >
+            Apply
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

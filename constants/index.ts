@@ -48,3 +48,45 @@ export const floatingIcons = [
     link: '/revenue',
   },
 ]
+
+export const status = [
+  {
+    id: 'successful',
+    label: 'Successful',
+  },
+  {
+    id: 'pending',
+    label: 'Pending',
+  },
+  {
+    id: 'failed',
+    label: 'Failed',
+  },
+]
+
+export const metaType = [
+  {
+    id: 'storeTransactions',
+    label: 'Store Transactions',
+  },
+  {
+    id: 'getTipped',
+    label: 'Get Tipped',
+  },
+  {
+    id: 'withdrawals',
+    label: 'Withdrawals',
+  },
+  {
+    id: 'chargebacks',
+    label: 'Chargebacks',
+  },
+  {
+    id: 'cashbacks',
+    label: 'Cashbacks',
+  },
+  {
+    id: 'refer&Earn',
+    label: 'Refer & Earn',
+  },
+]
