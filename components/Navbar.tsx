@@ -7,7 +7,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 
-const Navbar = ({ user }: USER) => {
+interface NavProps {
+  user: USER | null
+}
+
+const Navbar = React.FC<NavProps>({user}) => {
   const pathname = usePathname()
   const [menu, setMenu] = useState(false)
 
