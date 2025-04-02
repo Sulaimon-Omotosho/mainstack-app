@@ -86,6 +86,15 @@ const TransactionsPage = () => {
     })
   }
 
+  const handleClearFilters = () => {
+    setFilters({
+      fromDate: null,
+      toDate: null,
+      selectedTypes: [],
+      selectedStatuses: [],
+    })
+  }
+
   return (
     <section className='px-4 mb-96'>
       <section className='flex justify-between'>
@@ -100,7 +109,7 @@ const TransactionsPage = () => {
           </p>
         </div>
         <div className='flex gap-2'>
-          <Filter onFilter={handleFilter} />
+          <Filter onFilter={handleFilter} clearFilters={handleClearFilters} />
           <Button className='text-sm text-black py-6 bg-gray-200 rounded-full flex gap-1 justify-center items-center hover:bg-gray-300'>
             Export list
             <Download />
@@ -187,7 +196,10 @@ const TransactionsPage = () => {
               <p className='leading-6'>
                 Change your filters to see more results, or add a new product.
               </p>
-              <Button className='font-semibold text-lg bg-gray-200 hover:bg-gray-400 rounded-full text-black p-6 w-fit'>
+              <Button
+                onClick={handleClearFilters}
+                className='font-semibold text-lg bg-gray-200 hover:bg-gray-400 rounded-full text-black p-6 w-fit'
+              >
                 Clear Filter
               </Button>
             </div>

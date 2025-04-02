@@ -35,4 +35,5 @@ export type FilterProps = {
     selectedTypes?: string[],
     selectedStatuses?: string[]
   ) => void
+  clearFilters: () => void
 }

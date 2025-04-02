@@ -48,9 +48,40 @@ const FormSchema = z.object({
   transactionStatuses: z.array(z.string()),
 })
 
-const Filter: React.FC<FilterProps> = ({ onFilter }) => {
+const Filter: React.FC<FilterProps> = ({ onFilter, clearFilters }) => {
   const [fromDate, setFromDate] = React.useState<Date>()
   const [toDate, setToDate] = React.useState<Date>()
+
+  const handleDateRange = (range: string) => {
+    const today = new Date()
+    let from: Date | undefined = undefined
+    let to: Date | undefined = undefined
+
+    switch (range) {
+      case 'Today':
+        from = today
+        to = today
+        break
+      case 'Last 7 Days':
+        from = new Date(today)
+        from.setDate(today.getDate() - 7)
+        to = today
+        break
+      case 'This Month':
+        from = new Date(today.getFullYear(), today.getMonth(), 1)
+        to = today
+        break
+      case 'Last 3 Months':
+        from = new Date(today)
+        from.setMonth(today.getMonth() - 3)
+        to = today
+        break
+    }
+
+    setFromDate(from)
+    setToDate(to)
+    handleApplyFilter()
+  }
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -72,6 +103,7 @@ const Filter: React.FC<FilterProps> = ({ onFilter }) => {
     })
     setFromDate(undefined)
     setToDate(undefined)
+    clearFilters()
   }
 
   const filtersCount =
@@ -99,10 +131,30 @@ const Filter: React.FC<FilterProps> = ({ onFilter }) => {
             </DrawerClose>
           </DrawerTitle>
           <div className='flex justify-between items-center mt-8'>
-            <p className='p-2 ring-[1px] rounded-full text-xs'>Today</p>
-            <p className='p-2 ring-[1px] rounded-full text-xs'>Last 7 Days</p>
-            <p className='p-2 ring-[1px] rounded-full text-xs'>This Month</p>
-            <p className='p-2 ring-[1px] rounded-full text-xs'>Last 3 months</p>
+            <p
+              onClick={() => handleDateRange('Today')}
+              className='p-2 ring-[1px] rounded-full text-xs cursor-pointer hover:bg-gray-200'
+            >
+              Today
+            </p>
+            <p
+              onClick={() => handleDateRange('Last 7 Days')}
+              className='p-2 ring-[1px] rounded-full text-xs cursor-pointer hover:bg-gray-200'
+            >
+              Last 7 Days
+            </p>
+            <p
+              onClick={() => handleDateRange('This Month')}
+              className='p-2 ring-[1px] rounded-full text-xs cursor-pointer hover:bg-gray-200'
+            >
+              This Month
+            </p>
+            <p
+              onClick={() => handleDateRange('Last 3 Months')}
+              className='p-2 ring-[1px] rounded-full text-xs cursor-pointer hover:bg-gray-200'
+            >
+              Last 3 months
+            </p>
           </div>
         </DrawerHeader>
 
