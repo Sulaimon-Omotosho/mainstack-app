@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/drawer'
 
 import { format } from 'date-fns'
-import { Calendar as CalendarIcon, X } from 'lucide-react'
+import { Calendar as CalendarIcon, ChevronDown, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Calendar } from '@/components/ui/calendar'
@@ -52,14 +52,11 @@ const Filter: React.FC<FilterProps> = ({ onFilter }) => {
   const [fromDate, setFromDate] = React.useState<Date>()
   const [toDate, setToDate] = React.useState<Date>()
 
-  const defaultTransactionTypes = metaType.map((item) => item.id)
-  const defaultTransactionStatuses = status.map((item) => item.id)
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      transactionTypes: defaultTransactionTypes,
-      transactionStatuses: defaultTransactionStatuses,
+      transactionTypes: [],
+      transactionStatuses: [],
     },
   })
 
@@ -70,17 +67,28 @@ const Filter: React.FC<FilterProps> = ({ onFilter }) => {
 
   const handleClearFilter = () => {
     form.reset({
-      transactionTypes: defaultTransactionTypes,
-      transactionStatuses: defaultTransactionStatuses,
+      transactionTypes: [],
+      transactionStatuses: [],
     })
     setFromDate(undefined)
     setToDate(undefined)
   }
 
+  const filtersCount =
+    (fromDate || toDate ? 1 : 0) +
+    (form.watch('transactionTypes').length > 0 ? 1 : 0) +
+    (form.watch('transactionStatuses').length > 0 ? 1 : 0)
+
   return (
     <Drawer direction='right'>
-      <DrawerTrigger className='text-sm px-6  text-black bg-gray-200 rounded-full flex gap-1 justify-center items-center hover:bg-gray-300 '>
+      <DrawerTrigger className='text-sm px-2  text-black bg-gray-200 rounded-full flex gap-1 justify-center items-center hover:bg-gray-300 '>
         Filter
+        {filtersCount > 0 && (
+          <p className='text-xs flex justify-center items-center text-white bg-black w-5 h-5 rounded-full'>
+            {filtersCount}
+          </p>
+        )}
+        <ChevronDown className='w-5 h-5' />
       </DrawerTrigger>
       <DrawerContent className='w-[456px] z-[62] m-4 rounded-lg'>
         <DrawerHeader>

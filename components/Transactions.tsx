@@ -2,7 +2,12 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { Button } from './ui/button'
-import { ArrowDownLeftIcon, ArrowUpRightIcon, Download } from 'lucide-react'
+import {
+  ArrowDownLeftIcon,
+  ArrowUpRightIcon,
+  Download,
+  ScrollText,
+} from 'lucide-react'
 import Filter from './Filter'
 import { TRANSACTION } from '@/lib/types'
 
@@ -37,7 +42,6 @@ const TransactionsPage = () => {
         }
         const data: TRANSACTION[] = await response.json()
         setTransactionData(data)
-        // setFilteredTransactions(data)
       } catch (error) {
         setError('Failed to fetch Transaction Data')
       } finally {
@@ -75,8 +79,8 @@ const TransactionsPage = () => {
     selectedStatuses?: string[]
   ) => {
     setFilters({
-      fromDate: fromDate ?? null, // Convert undefined to null
-      toDate: toDate ?? null, // Convert undefined to null
+      fromDate: fromDate ?? null,
+      toDate: toDate ?? null,
       selectedTypes: selectedTypes || [],
       selectedStatuses: selectedStatuses || [],
     })
@@ -87,8 +91,8 @@ const TransactionsPage = () => {
       <section className='flex justify-between'>
         <div className=''>
           <h2 className='text-xl font-bold'>
-            {transactionData
-              ? `${transactionData.length} Transactions`
+            {filteredTransactions
+              ? `${filteredTransactions.length} Transactions`
               : 'Transactions'}
           </h2>
           <p className='text-xs text-gray-500'>
@@ -173,7 +177,22 @@ const TransactionsPage = () => {
         </section>
       ) : (
         !loading &&
-        !error && <p className='text-center'>No transactions found.</p>
+        !error && (
+          <section className='flex justify-center'>
+            <div className='text-start w-[400px] flex flex-col gap-5 mt-10'>
+              <ScrollText className='w-12 h-12 p-3 rounded-xl bg-gray-100 text-black ' />
+              <h2 className='font-bold text-2xl leading-10'>
+                No matching transaction found for the selected filter.
+              </h2>
+              <p className='leading-6'>
+                Change your filters to see more results, or add a new product.
+              </p>
+              <Button className='font-semibold text-lg bg-gray-200 hover:bg-gray-400 rounded-full text-black p-6 w-fit'>
+                Clear Filter
+              </Button>
+            </div>
+          </section>
+        )
       )}
     </section>
   )
